@@ -27,7 +27,7 @@ serverCaching() {
     serveradmin settings caching:LocalSubnetsOnly = yes
     serveradmin settings caching:AllowPersonalCaching = no
     serveradmin settings caching:DataPath = "/Library/Server/Caching/Data"
-    caching:ReservedVolumeSpace = 25000000000
+    serveradmin settings caching:ReservedVolumeSpace = 25000000000
     serveradmin settings caching:CacheLimit = 53687091200
 
 }
