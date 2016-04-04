@@ -56,7 +56,8 @@ serverCachingSetup() {
 
 casperDP() {
 
-    #may only be `touch` for the dir.
+    #may only be `mkdir` for the dir.
+    #/bin/mkdir /Users/Shared/CasperShare/
 
 }
 
@@ -70,6 +71,7 @@ windowsVMSetup() {
 
     #man VBoxManage
     #windows VM image will need to be built and deployed
+    # VBoxManage startvm windows
 
 }
 
@@ -77,6 +79,7 @@ zelloVMSetup() {
 
     #man VBoxManage
     #zello is an OOB ova.
+    # VBoxManage startvm zello
 
 }
 
