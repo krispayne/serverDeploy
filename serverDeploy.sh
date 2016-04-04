@@ -20,6 +20,10 @@
 
 serverCachingSetup() {
 
+    # Credit:
+    # http://krypted.com/mac-security/the-new-caching-service-in-os-x-server/
+    # http://krypted.com/mac-security/use-the-caching-server-in-os-x-server-5/
+
     # Setup Server.app
     #source expected1.sh
 
@@ -52,23 +56,33 @@ serverCachingSetup() {
 
 casperDP() {
 
+    #may only be `touch` for the dir.
+
 }
 
 vboxSetup() {
+
+    #man VBoxManage
 
 }
 
 windowsVMSetup() {
 
+    #man VBoxManage
+    #windows VM image will need to be built and deployed
+
 }
 
 zelloVMSetup() {
 
+    #man VBoxManage
+    #zello is an OOB ova.
 
 }
 
 prestoSetup() {
 
+    #probably some defaults write commands.
 
 }
 
