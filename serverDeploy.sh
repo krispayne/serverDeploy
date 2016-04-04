@@ -6,8 +6,8 @@
 # Progress tracker:
 
 # Settings we are going to need to edit
+# Caching service - 80%
 # Casper Distribution Point (http) - 0%
-# Caching service - 75%
 # Viritual Box - 0%
 # Windows VM - 0%
 # Zello VM - 0%
@@ -18,7 +18,7 @@
 
 # Start setting up Server.app (Caching)
 
-serverCaching() {
+serverCachingSetup() {
     # start the service
     serveradmin start caching
 
@@ -32,8 +32,30 @@ serverCaching() {
 
 }
 
+casperDP() {
+
+}
+
+vboxSetup() {
+
+}
+
+windowsVMSetup() {
+
+}
+
+zelloVMSetup() {
+
+
+}
+
+prestoSetup() {
+
+
+}
+
 main() {
     # Run the script
     # Comment out functions you do not want to run.
-    serverCaching
+    serverCachingSetup
 }
