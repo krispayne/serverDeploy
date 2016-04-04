@@ -3,14 +3,35 @@
 
 # Variables
 
+# Progress tracker:
+
 # Settings we are going to need to edit
-# Casper Distribution Point (http)
-# Caching service
-# Viritual Box
-# Windows VM
-# Zello VM
-# Presto 2
+# Casper Distribution Point (http) - 0%
+# Caching service - 75%
+# Viritual Box - 0%
+# Windows VM - 0%
+# Zello VM - 0%
+# Presto 2 - 0%
 
-# Script - Do not edit below this line
+# Bring in our other dependencies
+#source expected1.sh
 
-source expected1.sh
+# Start setting up Server.app (Caching)
+
+serverCaching() {
+    # start the service
+    serveradmin start caching
+
+    # define some settings
+    serveradmin settings caching:ServerRoot = "/Library/Server"
+    serveradmin settings caching:LocalSubnetsOnly = yes
+    serveradmin settings caching:AllowPersonalCaching = no
+    serveradmin settings caching:DataPath = "/Library/Server/Caching/Data"
+    serveradmin settings caching:CacheLimit =
+}
+
+main() {
+    # Run the script
+    # Comment out functions you do not want to run.
+    serverCaching
+}

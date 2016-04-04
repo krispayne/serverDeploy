@@ -1,4 +1,5 @@
 #!/usr/bin/expect
+# Credit http://krypted.com/mac-os-x-server/automating-the-server-app-setup-using-a-script/
 set timeout 300
 spawn server setup
 expect "Press Return to view the software license agreement." { send \r }
