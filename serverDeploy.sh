@@ -6,8 +6,8 @@
 # Progress tracker:
 
 # Settings we are going to need to edit
-# Caching service - 80%
-# Casper Distribution Point (http) - 0%
+# Caching service - 100%
+# Casper Distribution Point (http) - 40%
 # Viritual Box - 0%
 # Windows VM - 0%
 # Zello VM - 0%
@@ -56,8 +56,26 @@ serverCachingSetup() {
 
 casperDP() {
 
-    #may only be `mkdir` for the dir.
-    #/bin/mkdir /Users/Shared/CasperShare/
+    # Create the directory for the DP Share, if it doesn't already exist
+    if [[ ! -d /Users/Shared/CasperShare ]]; then
+        /bin/mkdir /Users/Shared/CasperShare/
+    else
+        echo "Directory Exists"
+    fi
+
+    # Create users for the share: casperadmin (read/write) casperinstall (read)
+    dscl / -create /Users/casperadmin UserShell /bin/bash RealName "Casper Admin"
+    dscl / -create /Users/casperinstall UserShell /bin/bash RealName "Casper Install"
+    dscl / -passwd /Users/casperadmin INSERTPASSWORDHERE
+    dscl / -passwd /Users/casperinstall INSERTPASSWORDHERE
+
+    # enable the filesharing service
+    /usr/sbin/sharing -a /Users/Shared/CasperShare -A CasperShare -S CasperShare -s 110 -g 000
+
+    # enable casperadmin and casperinstall access
+    # need to parse through the seradmin settings sharing results after setting up a dummy share
+    # /Applications/Server.app/Contents/ServerRoot/usr/sbin/serveradmin settings sharing:sharePointList:_array_id:/Users/Shared/CasperShare:
+
 
 }
 
