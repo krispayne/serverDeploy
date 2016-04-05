@@ -2,6 +2,9 @@
 # Settings for mac mini servers
 
 # Variables
+# Log and log archive location
+log_location="/var/log/serverDeploy_install.log"
+archive_log_location="/var/log/serverDeploy_install-`date +%Y-%m-%d-%H-%M-%S`.log"
 
 # Progress tracker:
 
@@ -60,7 +63,7 @@ casperDP() {
     if [[ ! -d /Users/Shared/CasperShare ]]; then
         /bin/mkdir /Users/Shared/CasperShare/
     else
-        echo "Directory Exists"
+        ScriptLogging "Directory Exists"
     fi
 
     # Create users for the share: casperadmin (read/write) casperinstall (read)
@@ -107,8 +110,30 @@ prestoSetup() {
 
 }
 
+ScriptLogging(){
+
+    if [ -n "$1" ]; then
+        IN="$1"
+    else
+        read IN # This reads a string from stdin and stores it in a variable called IN
+    fi
+
+    DATE=`date +%Y-%m-%d\ %H:%M:%S`
+    LOG="$log_location"
+
+    echo "$DATE" " $IN" >> $LOG
+}
+
 main() {
     # Run the script
     # Comment out functions you do not want to run.
-    serverCachingSetup
+
+    #serverCachingSetup
+    #casperDP
+    #vboxSetup
+    #windowsVMSetup
+    #zelloVMSetup
+    #prestoSetup
 }
+
+main
