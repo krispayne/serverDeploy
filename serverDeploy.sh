@@ -31,29 +31,29 @@ serverCachingSetup() {
     #source expected1.sh
 
     # start the service
-    /Applications/Server.app/Contents/ServerRoot/usr/sbin/serveradmin start caching
+    /Applications/Server.app/Contents/ServerRoot/usr/sbin/serveradmin start caching 2>&1 >> ScriptLogging
 
     # Set location of the ServerRoot
-    /Applications/Server.app/Contents/ServerRoot/usr/sbin/serveradmin settings caching:ServerRoot = "/Library/Server"
+    /Applications/Server.app/Contents/ServerRoot/usr/sbin/serveradmin settings caching:ServerRoot = "/Library/Server" 2>&1 >> ScriptLogging
 
     # Set location of the Cache data
-    /Applications/Server.app/Contents/ServerRoot/usr/sbin/serveradmin settings caching:DataPath = "/Library/Server/Caching/Data"
+    /Applications/Server.app/Contents/ServerRoot/usr/sbin/serveradmin settings caching:DataPath = "/Library/Server/Caching/Data" 2>&1 >> ScriptLogging
 
     # Set to only supply and recieve cache from local subnets
-    /Applications/Server.app/Contents/ServerRoot/usr/sbin/serveradmin settings caching:LocalSubnetsOnly = yes
+    /Applications/Server.app/Contents/ServerRoot/usr/sbin/serveradmin settings caching:LocalSubnetsOnly = yes 2>&1 >> ScriptLogging
 
     # Disable personal caching
-    /Applications/Server.app/Contents/ServerRoot/usr/sbin/serveradmin settings caching:AllowPersonalCaching = no
+    /Applications/Server.app/Contents/ServerRoot/usr/sbin/serveradmin settings caching:AllowPersonalCaching = no 2>&1 >> ScriptLogging
 
     # Reservered Volume Space - Needs research
-    /Applications/Server.app/Contents/ServerRoot/usr/sbin/serveradmin settings caching:ReservedVolumeSpace = 10000000000
+    /Applications/Server.app/Contents/ServerRoot/usr/sbin/serveradmin settings caching:ReservedVolumeSpace = 10000000000 2>&1 >> ScriptLogging
 
     # Cache limit of ~50GB
-    /Applications/Server.app/Contents/ServerRoot/usr/sbin/serveradmin settings caching:CacheLimit = 50000000000
+    /Applications/Server.app/Contents/ServerRoot/usr/sbin/serveradmin settings caching:CacheLimit = 50000000000 2>&1 >> ScriptLogging
 
     # restart the service
-    /Applications/Server.app/Contents/ServerRoot/usr/sbin/serveradmin stop caching
-    /Applications/Server.app/Contents/ServerRoot/usr/sbin/serveradmin start caching
+    /Applications/Server.app/Contents/ServerRoot/usr/sbin/serveradmin stop caching 2>&1 >> ScriptLogging
+    /Applications/Server.app/Contents/ServerRoot/usr/sbin/serveradmin start caching 2>&1 >> ScriptLogging
 
 }
 
@@ -61,19 +61,19 @@ casperDP() {
 
     # Create the directory for the DP Share, if it doesn't already exist
     if [[ ! -d /Users/Shared/CasperShare ]]; then
-        /bin/mkdir /Users/Shared/CasperShare/
+        /bin/mkdir /Users/Shared/CasperShare/ 2>&1 >> ScriptLogging
     else
         ScriptLogging "Directory Exists"
     fi
 
     # Create users for the share: casperadmin (read/write) casperinstall (read)
-    dscl / -create /Users/casperadmin UserShell /bin/bash RealName "Casper Admin"
-    dscl / -create /Users/casperinstall UserShell /bin/bash RealName "Casper Install"
-    dscl / -passwd /Users/casperadmin INSERTPASSWORDHERE
-    dscl / -passwd /Users/casperinstall INSERTPASSWORDHERE
+    dscl / -create /Users/casperadmin UserShell /bin/bash RealName "Casper Admin" 2>&1 >> ScriptLogging
+    dscl / -create /Users/casperinstall UserShell /bin/bash RealName "Casper Install" 2>&1 >> ScriptLogging
+    dscl / -passwd /Users/casperadmin INSERTPASSWORDHERE 2>&1 >> ScriptLogging
+    dscl / -passwd /Users/casperinstall INSERTPASSWORDHERE 2>&1 >> ScriptLogging
 
     # enable the filesharing service
-    /usr/sbin/sharing -a /Users/Shared/CasperShare -A CasperShare -S CasperShare -s 110 -g 000
+    /usr/sbin/sharing -a /Users/Shared/CasperShare -A CasperShare -S CasperShare -s 110 -g 000 2>&1 >> ScriptLogging
 
     # enable casperadmin and casperinstall access
     # need to parse through the serveradmin settings sharing results after setting up a dummy share
@@ -93,8 +93,8 @@ windowsVMSetup() {
 
     #man VBoxManage
     #windows VM image will need to be built and deployed
-    # vboxmanage createvm --name "Windows 7" --register
-    # vboxmanage startvm "Windows 7"
+    # vboxmanage createvm --name "Windows 7" --register 2>&1 >> ScriptLogging
+    # vboxmanage startvm "Windows 7" 2>&1 >> ScriptLogging
 
 }
 
@@ -102,8 +102,8 @@ zelloVMSetup() {
 
     #man VBoxManage
     #zello is an OOB ova.
-    # vboxmanage import "/Users/Shared/VirtualMachines/zello.ova"
-    # vboxmanage startvm "Zello Server 64"
+    # vboxmanage import "/var/rh/zello.ova" 2>&1 >> ScriptLogging
+    # vboxmanage startvm "Zello Server 64" 2>&1 >> ScriptLogging
 
 }
 
