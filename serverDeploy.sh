@@ -76,7 +76,7 @@ casperDP() {
     /usr/sbin/sharing -a /Users/Shared/CasperShare -A CasperShare -S CasperShare -s 110 -g 000
 
     # enable casperadmin and casperinstall access
-    # need to parse through the seradmin settings sharing results after setting up a dummy share
+    # need to parse through the serveradmin settings sharing results after setting up a dummy share
     # /Applications/Server.app/Contents/ServerRoot/usr/sbin/serveradmin settings sharing:sharePointList:_array_id:/Users/Shared/CasperShare:
 
 
@@ -84,7 +84,8 @@ casperDP() {
 
 vboxSetup() {
 
-    #man VBoxManage
+    #man vboxmanage
+    #https://www.virtualbox.org/manual/ch08.html
 
 }
 
@@ -92,7 +93,8 @@ windowsVMSetup() {
 
     #man VBoxManage
     #windows VM image will need to be built and deployed
-    # VBoxManage startvm windows
+    # vboxmanage createvm --name "Windows 7" --register
+    # vboxmanage startvm "Windows 7"
 
 }
 
@@ -100,13 +102,18 @@ zelloVMSetup() {
 
     #man VBoxManage
     #zello is an OOB ova.
-    # VBoxManage startvm zello
+    # vboxmanage import "/Users/Shared/VirtualMachines/zello.ova"
+    # vboxmanage startvm "Zello"
 
 }
 
 prestoSetup() {
 
     #probably some defaults write commands.
+
+    #check if presto server is installed
+    #set default settings for environment
+    #apply license
 
 }
 
