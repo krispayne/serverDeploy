@@ -103,7 +103,7 @@ zelloVMSetup() {
     #man VBoxManage
     #zello is an OOB ova.
     # vboxmanage import "/Users/Shared/VirtualMachines/zello.ova"
-    # vboxmanage startvm "Zello"
+    # vboxmanage startvm "Zello Server 64"
 
 }
 
@@ -135,7 +135,7 @@ main() {
     # Run the script
     # Comment out functions you do not want to run.
 
-    #serverCachingSetup
+    serverCachingSetup
     #casperDP
     #vboxSetup
     #windowsVMSetup
