@@ -84,12 +84,12 @@ casperDP() {
 
 }
 
-#vboxSetup() {
+vboxSetup() {
 
     #man vboxmanage
     #https://www.virtualbox.org/manual/ch08.html
-
-#}
+true;
+}
 
 windowsVMSetup() {
 
@@ -97,7 +97,7 @@ windowsVMSetup() {
     #windows VM image will need to be built and deployed
     # vboxmanage createvm --name "Windows 7" --register 2>&1 >> ScriptLogging
     # vboxmanage startvm "Windows 7" 2>&1 >> ScriptLogging
-
+true;
 }
 
 zelloVMSetup() {
@@ -106,7 +106,7 @@ zelloVMSetup() {
     #zello is an OOB ova.
     # vboxmanage import "/var/rh/zello.ova" 2>&1 >> ScriptLogging
     # vboxmanage startvm "Zello Server 64" 2>&1 >> ScriptLogging
-
+true;
 }
 
 prestoSetup() {
@@ -116,7 +116,7 @@ prestoSetup() {
     #check if presto server is installed
     #set default settings for environment
     #apply license
-
+true;
 }
 
 ScriptLogging(){
