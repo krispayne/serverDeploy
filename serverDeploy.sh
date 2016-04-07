@@ -3,17 +3,30 @@
 
 # Variables
 
-# Server.app Setup
+# Server.app Setup Variables
 serverSetupUsername=YOURSERVERUSERNAME
 serverSetupPassword=YOURSERVERPASSWORD
 
-# Server.app Caching Setup
+# Server.app Caching Setup Variables
 cachingServerRoot="/Library/Server"
 cachingDataPath="/Library/Server/Caching/Data"
 cachingLocalSubnetsOnly="yes"
 cachingAllowPersonalCaching="no"
 cachingReservedVolumeSpace="10000000000"
 cachingCacheLimit="50000000000"
+
+# CasperShare Setup Variables
+casperDPDirectory="/Users/Shared/CasperShare"
+casperDPDirectoryFriendlyName="CasperShare"
+
+# User setup
+casperDPReadWriteShortName="casperadmin"
+casperDPReadWriteRealName="Casper Admin"
+casperDPReadWritePassword=""
+
+casperDPReadShortName="casperinstall"
+casperDPReadRealName="Casper Install"
+casperDPReadPassword=""
 
 # Log and log archive location
 log_location="/var/log/serverDeploy_install.log"
@@ -79,19 +92,20 @@ serverCachingSetup() {
 casperDP() {
 
     # Create the directory for the DP Share, if it doesn't already exist
-    if [[ ! -d /Users/Shared/CasperShare ]]; then
-        /bin/mkdir /Users/Shared/CasperShare/
+    if [[ ! -d $casperDPDirectory ]]; then
+        /bin/mkdir $casperDPDirectory
+    else
         ScriptLogging " Directory Exists "
     fi
 
     # Create users for the share: casperadmin (read/write) casperinstall (read)
-    dscl / -create /Users/casperadmin UserShell /bin/bash RealName "Casper Admin"
-    dscl / -create /Users/casperinstall UserShell /bin/bash RealName "Casper Install"
-    dscl / -passwd /Users/casperadmin INSERTPASSWORDHERE
-    dscl / -passwd /Users/casperinstall INSERTPASSWORDHERE
+    dscl / -create "/Users/$casperDPReadWriteShortName" UserShell /bin/bash RealName "$casperDPReadWriteRealName"
+    dscl / -create "/Users/$casperDPReadShortName" UserShell /bin/bash RealName "$casperDPReadRealName"
+    dscl / -passwd "/Users/$casperDPReadWriteShortName" "$casperDPReadWritePassword"
+    dscl / -passwd "/Users/$casperDPReadShortName" "$casperDPReadPassword"
 
     # enable the filesharing service
-    /usr/sbin/sharing -a /Users/Shared/CasperShare -A CasperShare -S CasperShare -s 110 -g 000
+    /usr/sbin/sharing -a "$casperDPDirectory" -A $casperDPDirectoryFriendlyName -S $casperDPDirectoryFriendlyName -s 110 -g 000
 
     # enable casperadmin and casperinstall access
     # need to parse through the serveradmin settings sharing results after setting up a dummy share
