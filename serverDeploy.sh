@@ -56,6 +56,7 @@ serverCachingSetup() {
 
     # restart the service
     /Applications/Server.app/Contents/ServerRoot/usr/sbin/serveradmin stop caching
+    sleep 10
     /Applications/Server.app/Contents/ServerRoot/usr/sbin/serveradmin start caching
 }
 
