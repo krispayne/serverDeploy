@@ -121,6 +121,17 @@ true;
 
 ScriptLogging(){
 
+    if [[ -f "$log_location" ]]; then
+        /bin/mv $log_location $archive_log_location
+    fi
+
+    ScriptLogging "  -------------------  "
+    ScriptLogging " Starting Server Deploy "
+    ScriptLogging "  -------------------  "
+    ScriptLogging " "
+    ScriptLogging "`date +%Y-%m-%d\ %H:%M:%S`"
+    ScriptLogging " "
+
     if [ -n "$1" ]; then
         IN="$1"
     else
