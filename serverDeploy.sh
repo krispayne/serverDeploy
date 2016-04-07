@@ -131,7 +131,7 @@ ScriptLogging(){
     echo "$DATE" " $IN" >> $LOG
 }
 
-main() {
+mainScript() {
     # Run the script
     # Comment out functions you do not want to run.
 
@@ -143,4 +143,4 @@ main() {
     #prestoSetup
 }
 
-main
+mainScript
