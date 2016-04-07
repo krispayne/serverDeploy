@@ -4,8 +4,8 @@
 # Variables
 
 # Server.app Setup Variables
-serverSetupUsername=YOURSERVERUSERNAME
-serverSetupPassword=YOURSERVERPASSWORD
+serverSetupUsername="admin"
+serverSetupPassword="password"
 
 # Server.app Caching Setup Variables
 cachingServerRoot="/Library/Server"
@@ -22,11 +22,11 @@ casperDPDirectoryFriendlyName="CasperShare"
 # User setup
 casperDPReadWriteShortName="casperadmin"
 casperDPReadWriteRealName="Casper Admin"
-casperDPReadWritePassword=""
+casperDPReadWritePassword="password"
 
 casperDPReadShortName="casperinstall"
 casperDPReadRealName="Casper Install"
-casperDPReadPassword=""
+casperDPReadPassword="password"
 
 # Log and log archive location
 log_location="/var/log/serverDeploy_install.log"
@@ -92,20 +92,32 @@ serverCachingSetup() {
 casperDP() {
 
     # Create the directory for the DP Share, if it doesn't already exist
-    if [[ ! -d $casperDPDirectory ]]; then
-        /bin/mkdir $casperDPDirectory
+    if [ -d "$casperDPDirectory" ]; then
+        echo " Directory Exists "
     else
-        ScriptLogging " Directory Exists "
+        echo "make dir"
+        /bin/mkdir "$casperDPDirectory"
     fi
 
     # Create users for the share: casperadmin (read/write) casperinstall (read)
-    dscl / -create "/Users/$casperDPReadWriteShortName" UserShell /bin/bash RealName "$casperDPReadWriteRealName"
-    dscl / -create "/Users/$casperDPReadShortName" UserShell /bin/bash RealName "$casperDPReadRealName"
-    dscl / -passwd "/Users/$casperDPReadWriteShortName" "$casperDPReadWritePassword"
-    dscl / -passwd "/Users/$casperDPReadShortName" "$casperDPReadPassword"
+    echo "make read write"
+    dscl . -create "/Users/$casperDPReadWriteShortName"
+    dscl . -create "/Users/$casperDPReadWriteShortName" UserShell /bin/bash
+    dscl . -create "/Users/$casperDPReadWriteShortName" RealName "$casperDPReadWriteRealName"
+
+    echo "make read only"
+    dscl . -create "/Users/$casperDPReadShortName"
+    dscl . -create "/Users/$casperDPReadShortName" UserShell /bin/bash
+    dscl . -create "/Users/$casperDPReadShortName" RealName "$casperDPReadRealName"
+
+    echo "make read write pass"
+    dscl . -passwd "/Users/$casperDPReadWriteShortName" "$casperDPReadWritePassword"
+
+    echo "make read only pass"
+    dscl . -passwd "/Users/$casperDPReadShortName" "$casperDPReadPassword"
 
     # enable the filesharing service
-    /usr/sbin/sharing -a "$casperDPDirectory" -A $casperDPDirectoryFriendlyName -S $casperDPDirectoryFriendlyName -s 110 -g 000
+    /usr/sbin/sharing -a "$casperDPDirectory" -AS $casperDPDirectoryFriendlyName -s 110 -g 000
 
     # enable casperadmin and casperinstall access
     # need to parse through the serveradmin settings sharing results after setting up a dummy share
@@ -176,13 +188,14 @@ ScriptLogging(){
 mainScript() {
     # Run the script
     # Comment out functions you do not want to run.
-    serverSetup
-    serverCachingSetup
-    #casperDP
+    #serverSetup
+    #serverCachingSetup
+    casperDP
     #vboxSetup
     #windowsVMSetup
     #zelloVMSetup
     #prestoSetup
 }
 
+# Start your engines
 mainScript
