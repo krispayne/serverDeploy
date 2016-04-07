@@ -95,6 +95,8 @@ windowsVMSetup() {
     #windows VM image will need to be built and deployed
     # vboxmanage createvm --name "Windows 7" --register
     # vboxmanage startvm "Windows 7"
+true;
+}
 
 zelloVMSetup() {
 
@@ -125,7 +127,7 @@ ScriptLogging(){
     ScriptLogging " Starting Server Deploy "
     ScriptLogging "  -------------------  "
     ScriptLogging " "
-    ScriptLogging "`date +%Y-%m-%d\ %H:%M:%S`"
+    ScriptLogging "$(date +%Y-%m-%d\ %H:%M:%S)"
     ScriptLogging " "
 
     if [ -n "$1" ]; then
