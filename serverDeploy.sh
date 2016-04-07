@@ -22,6 +22,8 @@ serverSetup() {
     # Setup Server.app
     # agree to terms, etc.
     # Setup Server.app
+    local username=YOURADMINUSERNAME
+    local password=YOURADMINPASSWORD
     ./serverSetup.exp "$username" "$password"
     sleep 5
 }
