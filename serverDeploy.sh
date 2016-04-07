@@ -22,7 +22,7 @@ serverSetup() {
     # Setup Server.app
     # agree to terms, etc.
     # Setup Server.app
-    #source expected1.sh
+    ./serverSetup.exp "$username" "$password"
     sleep 5
 }
 
@@ -34,6 +34,7 @@ serverCachingSetup() {
     # http://krypted.com/mac-security/use-the-caching-server-in-os-x-server-5/
 
     # start the service
+    ScriptLogging " Setting up Caching Server "
     /Applications/Server.app/Contents/ServerRoot/usr/sbin/serveradmin start caching
 
     # Set location of the ServerRoot
@@ -55,6 +56,7 @@ serverCachingSetup() {
     /Applications/Server.app/Contents/ServerRoot/usr/sbin/serveradmin settings caching:CacheLimit = 50000000000
 
     # restart the service
+    ScriptLogging " Restarting Caching Server "
     /Applications/Server.app/Contents/ServerRoot/usr/sbin/serveradmin stop caching
     sleep 10
     /Applications/Server.app/Contents/ServerRoot/usr/sbin/serveradmin start caching
@@ -65,7 +67,7 @@ casperDP() {
     # Create the directory for the DP Share, if it doesn't already exist
     if [[ ! -d /Users/Shared/CasperShare ]]; then
         /bin/mkdir /Users/Shared/CasperShare/
-        ScriptLogging "Directory Exists"
+        ScriptLogging " Directory Exists "
     fi
 
     # Create users for the share: casperadmin (read/write) casperinstall (read)
