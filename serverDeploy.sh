@@ -5,6 +5,7 @@
 # Log and log archive location
 log_location="/var/log/serverDeploy_install.log"
 archive_log_location="/var/log/serverDeploy_install-`date +%Y-%m-%d-%H-%M-%S`.log"
+touch $log_location
 
 # Progress tracker:
 
@@ -22,7 +23,7 @@ serverSetup() {
     # Setup Server.app
     # agree to terms, etc.
     # Setup Server.app
-    source expected1.sh
+    #source expected1.sh
     sleep 5
 }
 
