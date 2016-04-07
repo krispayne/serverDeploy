@@ -2,6 +2,11 @@
 # Settings for mac mini servers
 
 # Variables
+
+# serverSetup
+serverSetupUsername=YOURSERVERUSERNAME
+serverSetupPassword=YOURSERVERPASSWORD
+
 # Log and log archive location
 log_location="/var/log/serverDeploy_install.log"
 archive_log_location="/var/log/serverDeploy_install-$(date +%Y-%m-%d-%H-%M-%S).log"
@@ -22,9 +27,8 @@ archive_log_location="/var/log/serverDeploy_install-$(date +%Y-%m-%d-%H-%M-%S).l
 serverSetup() {
     # Setup Server.app
     # agree to terms, etc.
-    local username=YOURADMINUSERNAME
-    local password=YOURADMINPASSWORD
-    ./serverSetup.exp "$username" "$password"
+
+    ./serverSetup.exp "$serverSetupUsername" "$serverSetupPassword"
     sleep 5
 }
 
