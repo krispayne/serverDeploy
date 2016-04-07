@@ -3,9 +3,17 @@
 
 # Variables
 
-# serverSetup
+# Server.app Setup
 serverSetupUsername=YOURSERVERUSERNAME
 serverSetupPassword=YOURSERVERPASSWORD
+
+# Server.app Caching Setup
+cachingServerRoot="/Library/Server"
+cachingDataPath="/Library/Server/Caching/Data"
+cachingLocalSubnetsOnly="yes"
+cachingAllowPersonalCaching="no"
+cachingReservedVolumeSpace="10000000000"
+cachingCacheLimit="50000000000"
 
 # Log and log archive location
 log_location="/var/log/serverDeploy_install.log"
@@ -44,22 +52,22 @@ serverCachingSetup() {
     /Applications/Server.app/Contents/ServerRoot/usr/sbin/serveradmin start caching
 
     # Set location of the ServerRoot
-    /Applications/Server.app/Contents/ServerRoot/usr/sbin/serveradmin settings caching:ServerRoot = "/Library/Server"
+    /Applications/Server.app/Contents/ServerRoot/usr/sbin/serveradmin settings caching:ServerRoot = "$cachingServerRoot"
 
     # Set location of the Cache data
-    /Applications/Server.app/Contents/ServerRoot/usr/sbin/serveradmin settings caching:DataPath = "/Library/Server/Caching/Data"
+    /Applications/Server.app/Contents/ServerRoot/usr/sbin/serveradmin settings caching:DataPath = "$cachingDataPath"
 
     # Set to only supply and recieve cache from local subnets
-    /Applications/Server.app/Contents/ServerRoot/usr/sbin/serveradmin settings caching:LocalSubnetsOnly = yes
+    /Applications/Server.app/Contents/ServerRoot/usr/sbin/serveradmin settings caching:LocalSubnetsOnly = "$cachingLocalSubnetsOnly"
 
     # Disable personal caching
-    /Applications/Server.app/Contents/ServerRoot/usr/sbin/serveradmin settings caching:AllowPersonalCaching = no
+    /Applications/Server.app/Contents/ServerRoot/usr/sbin/serveradmin settings caching:AllowPersonalCaching = "$cachingAllowPersonalCaching"
 
     # Reservered Volume Space - Needs research
-    /Applications/Server.app/Contents/ServerRoot/usr/sbin/serveradmin settings caching:ReservedVolumeSpace = 10000000000
+    /Applications/Server.app/Contents/ServerRoot/usr/sbin/serveradmin settings caching:ReservedVolumeSpace = "$cachingReservedVolumeSpace"
 
     # Cache limit of ~50GB
-    /Applications/Server.app/Contents/ServerRoot/usr/sbin/serveradmin settings caching:CacheLimit = 50000000000
+    /Applications/Server.app/Contents/ServerRoot/usr/sbin/serveradmin settings caching:CacheLimit = "$cachingCacheLimit"
 
     # restart the service
     ScriptLogging " Restarting Caching Server "
