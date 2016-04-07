@@ -19,11 +19,11 @@ archive_log_location="/var/log/serverDeploy_install-`date +%Y-%m-%d-%H-%M-%S`.lo
 # Bring in our other dependencies
 
 serverSetup() {
-# Setup Server.app
-# agree to terms, etc.
-# Setup Server.app
-source expected1.sh
-sleep 5
+    # Setup Server.app
+    # agree to terms, etc.
+    # Setup Server.app
+    source expected1.sh
+    sleep 5
 }
 
 # Start setting up Server.app (Caching)
@@ -82,15 +82,14 @@ casperDP() {
     # need to parse through the serveradmin settings sharing results after setting up a dummy share
     # /Applications/Server.app/Contents/ServerRoot/usr/sbin/serveradmin settings sharing:sharePointList:_array_id:/Users/Shared/CasperShare:
 
-
 }
 
-vboxSetup() {
+#vboxSetup() {
 
     #man vboxmanage
     #https://www.virtualbox.org/manual/ch08.html
 
-}
+#}
 
 windowsVMSetup() {
 
