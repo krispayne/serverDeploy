@@ -9,6 +9,7 @@ archive_log_location="/var/log/serverDeploy_install-$(date +%Y-%m-%d-%H-%M-%S).l
 # Progress tracker:
 
 # Settings we are going to need to edit
+# Server setup - 100%
 # Caching service - 100%
 # Casper Distribution Point (http) - 40%
 # Viritual Box - 0%
@@ -21,7 +22,6 @@ archive_log_location="/var/log/serverDeploy_install-$(date +%Y-%m-%d-%H-%M-%S).l
 serverSetup() {
     # Setup Server.app
     # agree to terms, etc.
-    # Setup Server.app
     local username=YOURADMINUSERNAME
     local password=YOURADMINPASSWORD
     ./serverSetup.exp "$username" "$password"
