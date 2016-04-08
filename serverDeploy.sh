@@ -108,35 +108,36 @@ casperDP() {
     if [ -d "$casperDPDirectory" ]; then
         echo " Directory Exists "
     else
-        echo "make dir"
+        echo "Create $casperDPDirectory"
         /bin/mkdir "$casperDPDirectory"
     fi
 
     # Create users for the share: casperadmin (read/write) casperinstall (read)
-    echo "make read write"
+    echo "Create $casperDPReadWriteShortName..."
     dscl . -create "/Users/$casperDPReadWriteShortName"
     dscl . -create "/Users/$casperDPReadWriteShortName" UserShell /bin/bash
     dscl . -create "/Users/$casperDPReadWriteShortName" RealName "$casperDPReadWriteRealName"
     dscl . -create "/Users/$casperDPReadWriteShortName" UniqueID $RANDOM
     dscl . -create "/Users/$casperDPReadWriteShortName" PrimaryGroupID 1000
 
-    echo "make read only"
+    echo "Create $casperDPReadShortName..."
     dscl . -create "/Users/$casperDPReadShortName"
     dscl . -create "/Users/$casperDPReadShortName" UserShell /bin/bash
     dscl . -create "/Users/$casperDPReadShortName" RealName "$casperDPReadRealName"
     dscl . -create "/Users/$casperDPReadShortName" UniqueID $RANDOM
     dscl . -create "/Users/$casperDPReadShortName" PrimaryGroupID 1000
 
-    echo "make read write pass"
+    echo "Set $casperDPReadWriteShortName password..."
     dscl . -passwd "/Users/$casperDPReadWriteShortName" "$casperDPReadWritePassword"
 
-    echo "make read only pass"
+    echo "Set $casperDPReadShortName password..."
     dscl . -passwd "/Users/$casperDPReadShortName" "$casperDPReadPassword"
 
     # enable the filesharing service
     /usr/sbin/sharing -a "$casperDPDirectory" -AS $casperDPDirectoryFriendlyName -s 110 -g 000
 
     # enable casperadmin and casperinstall access
+    echo "Set ACL's for our Casper Users..."
     /bin/chmod +a "$casperDPReadWriteShortName allow list,add_file,search,add_subdirectory,delete_child,readattr,writeattr,readextattr,writeextattr,readsecurity" "$casperDPDirectory"
     /bin/chmod +a "$casperDPReadShortName allow list,search,readattr,readextattr,readsecurity" "$casperDPDirectory"
 
