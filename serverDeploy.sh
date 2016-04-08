@@ -113,14 +113,14 @@ casperDP() {
     dscl . -create "/Users/$casperDPReadWriteShortName"
     dscl . -create "/Users/$casperDPReadWriteShortName" UserShell /bin/bash
     dscl . -create "/Users/$casperDPReadWriteShortName" RealName "$casperDPReadWriteRealName"
-    dscl . -create "/Users/$casperDPReadWriteShortName" UniqueID 333444
+    dscl . -create "/Users/$casperDPReadWriteShortName" UniqueID $RANDOM
     dscl . -create "/Users/$casperDPReadWriteShortName" PrimaryGroupID 1000
 
     echo "make read only"
     dscl . -create "/Users/$casperDPReadShortName"
     dscl . -create "/Users/$casperDPReadShortName" UserShell /bin/bash
     dscl . -create "/Users/$casperDPReadShortName" RealName "$casperDPReadRealName"
-    dscl . -create "/Users/$casperDPReadShortName" UniqueID 444555
+    dscl . -create "/Users/$casperDPReadShortName" UniqueID $RANDOM
     dscl . -create "/Users/$casperDPReadShortName" PrimaryGroupID 1000
 
     echo "make read write pass"
