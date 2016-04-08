@@ -5,6 +5,10 @@
 # This is built for a specific purpose in mind, but is easily editable to suit your needs.
 # We need to deploy 89 Mac mini's across North America for use in Caching, JAMF Casper FileShare Distribution Points, Presto2 printserver, and Zello walkie-talkie host.
 # The settings here are mostly default, but we wanted as 0-touch setup as possible.
+#
+#
+#    This script is NOT meant to be run multiple times on the same system.
+#
 # ---------------------------------------------------------------------------- #
 
 # Variables
