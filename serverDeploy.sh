@@ -37,7 +37,7 @@ archive_log_location="/var/log/serverDeploy_install-$(date +%Y-%m-%d-%H-%M-%S).l
 # Settings we are going to need to edit
 # Server setup - 100%
 # Caching service - 100%
-# Casper Distribution Point (http) - 40%
+# Casper Distribution Point (http) - 100%
 # Viritual Box - 0%
 # Windows VM - 0%
 # Zello VM - 0%
@@ -61,7 +61,7 @@ serverCachingSetup() {
     # http://krypted.com/mac-security/use-the-caching-server-in-os-x-server-5/
 
     # start the service
-    ScriptLogging " Setting up Caching Server "
+    echo " Setting up Caching Server "
     /Applications/Server.app/Contents/ServerRoot/usr/sbin/serveradmin start caching
 
     # Set location of the ServerRoot
@@ -83,7 +83,7 @@ serverCachingSetup() {
     /Applications/Server.app/Contents/ServerRoot/usr/sbin/serveradmin settings caching:CacheLimit = "$cachingCacheLimit"
 
     # restart the service
-    ScriptLogging " Restarting Caching Server "
+    echo " Restarting Caching Server "
     /Applications/Server.app/Contents/ServerRoot/usr/sbin/serveradmin stop caching
     sleep 10
     /Applications/Server.app/Contents/ServerRoot/usr/sbin/serveradmin start caching
@@ -104,11 +104,15 @@ casperDP() {
     dscl . -create "/Users/$casperDPReadWriteShortName"
     dscl . -create "/Users/$casperDPReadWriteShortName" UserShell /bin/bash
     dscl . -create "/Users/$casperDPReadWriteShortName" RealName "$casperDPReadWriteRealName"
+    dscl . -create "/Users/$casperDPReadWriteShortName" UniqueID 333444
+    dscl . -create "/Users/$casperDPReadWriteShortName" PrimaryGroupID 1000
 
     echo "make read only"
     dscl . -create "/Users/$casperDPReadShortName"
     dscl . -create "/Users/$casperDPReadShortName" UserShell /bin/bash
     dscl . -create "/Users/$casperDPReadShortName" RealName "$casperDPReadRealName"
+    dscl . -create "/Users/$casperDPReadShortName" UniqueID 444555
+    dscl . -create "/Users/$casperDPReadShortName" PrimaryGroupID 1000
 
     echo "make read write pass"
     dscl . -passwd "/Users/$casperDPReadWriteShortName" "$casperDPReadWritePassword"
@@ -120,8 +124,9 @@ casperDP() {
     /usr/sbin/sharing -a "$casperDPDirectory" -AS $casperDPDirectoryFriendlyName -s 110 -g 000
 
     # enable casperadmin and casperinstall access
-    # need to parse through the serveradmin settings sharing results after setting up a dummy share
-    # /Applications/Server.app/Contents/ServerRoot/usr/sbin/serveradmin settings sharing:sharePointList:_array_id:/Users/Shared/CasperShare:
+    /bin/chmod +a "$casperDPReadWriteShortName allow list,add_file,search,add_subdirectory,delete_child,readattr,writeattr,readextattr,writeextattr,readsecurity" "$casperDPDirectory"
+    /bin/chmod +a "$casperDPReadShortName allow list,search,readattr,readextattr,readsecurity" "$casperDPDirectory"
+
 
 }
 
