@@ -1,32 +1,38 @@
 #!/bin/bash
 # Settings for mac mini servers
 
+# ---------------------------------------------------------------------------- #
+# This is built for a specific purpose in mind, but is easily editable to suit your needs.
+# We need to deploy 89 Mac mini's across North America for use in Caching, JAMF Casper FileShare Distribution Points, Presto2 printserver, and Zello walkie-talkie host.
+# The settings here are mostly default, but we wanted as 0-touch setup as possible.
+# ---------------------------------------------------------------------------- #
+
 # Variables
+# Edit each section below to suit your preferences for each service
 
 # Server.app Setup Variables
+# These are the local admin to the Mac
 serverSetupUsername="admin"
 serverSetupPassword="password"
 
 # Server.app Caching Setup Variables
-cachingServerRoot="/Library/Server"
-cachingDataPath="/Library/Server/Caching/Data"
+cachingServerRoot="/Library/Server" # Default is /Library/Server
+cachingDataPath="/Library/Server/Caching/Data" # Default is /Library/Server/Caching/Data
 cachingLocalSubnetsOnly="yes"
 cachingAllowPersonalCaching="no"
-cachingReservedVolumeSpace="10000000000"
-cachingCacheLimit="50000000000"
+cachingReservedVolumeSpace="10000000000" # Sizes are in bytes (~100GB)
+cachingCacheLimit="50000000000" # Sizes are in bytes (~50GB)
 
 # CasperShare Setup Variables
-casperDPDirectory="/Users/Shared/CasperShare"
-casperDPDirectoryFriendlyName="CasperShare"
-
+casperDPDirectory="/Users/Shared/CasperShare" # Can be put anywhere, really. Put in a visible folder for other techs to easily find.
+casperDPDirectoryFriendlyName="CasperShare" # I just make it the same as the dir.
 # User setup
 casperDPReadWriteShortName="casperadmin"
 casperDPReadWriteRealName="Casper Admin"
-casperDPReadWritePassword="password"
-
+casperDPReadWritePassword="password" # Change!
 casperDPReadShortName="casperinstall"
 casperDPReadRealName="Casper Install"
-casperDPReadPassword="password"
+casperDPReadPassword="password" # Change!
 
 # Log and log archive location
 log_location="/var/log/serverDeploy_install.log"
@@ -35,15 +41,29 @@ archive_log_location="/var/log/serverDeploy_install-$(date +%Y-%m-%d-%H-%M-%S).l
 # Progress tracker:
 
 # Settings we are going to need to edit
-# Server setup - 100%
-# Caching service - 100%
-# Casper Distribution Point (http) - 100%
 # Viritual Box - 0%
 # Windows VM - 0%
 # Zello VM - 0%
 # Presto 2 - 0%
 
-# Bring in our other dependencies
+mainScript() {
+    # Run the script
+    # Comment out functions you do not want to run.
+
+    #All are off by default!
+
+    #serverSetup
+    #serverCachingSetup
+    #casperDP
+    #vboxSetup
+    #windowsVMSetup
+    #zelloVMSetup
+    #prestoSetup
+}
+
+# ---------------------------------------------------------------------------- #
+#                      No need to edit below this line                         #
+# ---------------------------------------------------------------------------- #
 
 serverSetup() {
     # Setup Server.app
@@ -63,23 +83,11 @@ serverCachingSetup() {
     # start the service
     echo " Setting up Caching Server "
     /Applications/Server.app/Contents/ServerRoot/usr/sbin/serveradmin start caching
-
-    # Set location of the ServerRoot
     /Applications/Server.app/Contents/ServerRoot/usr/sbin/serveradmin settings caching:ServerRoot = "$cachingServerRoot"
-
-    # Set location of the Cache data
     /Applications/Server.app/Contents/ServerRoot/usr/sbin/serveradmin settings caching:DataPath = "$cachingDataPath"
-
-    # Set to only supply and recieve cache from local subnets
     /Applications/Server.app/Contents/ServerRoot/usr/sbin/serveradmin settings caching:LocalSubnetsOnly = "$cachingLocalSubnetsOnly"
-
-    # Disable personal caching
     /Applications/Server.app/Contents/ServerRoot/usr/sbin/serveradmin settings caching:AllowPersonalCaching = "$cachingAllowPersonalCaching"
-
-    # Reservered Volume Space - Needs research
     /Applications/Server.app/Contents/ServerRoot/usr/sbin/serveradmin settings caching:ReservedVolumeSpace = "$cachingReservedVolumeSpace"
-
-    # Cache limit of ~50GB
     /Applications/Server.app/Contents/ServerRoot/usr/sbin/serveradmin settings caching:CacheLimit = "$cachingCacheLimit"
 
     # restart the service
@@ -87,6 +95,7 @@ serverCachingSetup() {
     /Applications/Server.app/Contents/ServerRoot/usr/sbin/serveradmin stop caching
     sleep 10
     /Applications/Server.app/Contents/ServerRoot/usr/sbin/serveradmin start caching
+    echo " Caching enabled and setup! "
 }
 
 casperDP() {
@@ -126,7 +135,6 @@ casperDP() {
     # enable casperadmin and casperinstall access
     /bin/chmod +a "$casperDPReadWriteShortName allow list,add_file,search,add_subdirectory,delete_child,readattr,writeattr,readextattr,writeextattr,readsecurity" "$casperDPDirectory"
     /bin/chmod +a "$casperDPReadShortName allow list,search,readattr,readextattr,readsecurity" "$casperDPDirectory"
-
 
 }
 
@@ -188,18 +196,6 @@ ScriptLogging(){
     LOG="$log_location"
 
     echo "$DATE" " $IN" >> $LOG
-}
-
-mainScript() {
-    # Run the script
-    # Comment out functions you do not want to run.
-    #serverSetup
-    #serverCachingSetup
-    casperDP
-    #vboxSetup
-    #windowsVMSetup
-    #zelloVMSetup
-    #prestoSetup
 }
 
 # Start your engines
