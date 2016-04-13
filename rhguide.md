@@ -15,3 +15,5 @@ Version: 0.1
 1. Boot into the NetBoot
 2. Name the machine according to the Naming Convetions for Mac Servers: _SRVR-XXX-ASSET_ where `XXX` = Store Number and `ASSET` = Asset tag on bottom case
 3.
+
+
