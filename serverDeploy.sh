@@ -49,7 +49,6 @@ archive_log_location="/var/log/serverDeploy_install-$(date +%Y-%m-%d-%H-%M-%S).l
 # Progress tracker:
 
 # Settings we are going to need to edit
-# Viritual Box - 0%
 # Windows VM - 0%
 # Zello VM - 0%
 # Presto 2 - 0%
@@ -63,7 +62,6 @@ mainScript() {
     #serverSetup
     #serverCachingSetup
     #casperDP
-    #vboxSetup
     #windowsVMSetup
     #zelloVMSetup
     #prestoSetup
@@ -147,19 +145,13 @@ casperDP() {
 
 }
 
-vboxSetup() {
-
-    #man vboxmanage
-    #https://www.virtualbox.org/manual/ch08.html
-true;
-}
-
 windowsVMSetup() {
 
     #man VBoxManage
     #windows VM image will need to be built and deployed
     # vboxmanage createvm --name "Windows 7" --register
     # vboxmanage startvm "Windows 7"
+    # this is on hold
 true;
 }
 
