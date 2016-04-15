@@ -20,8 +20,9 @@
 
 # Server.app Setup Variables
 # These are the local admin to the Mac
-serverSetupUsername="admin" # Change!
-serverSetupPassword="password" # Change!
+localAdminUser="admin" # Change!
+localAdminPass="password" # Change!
+localAdminDir="/var" # Change!
 
 # Server.app Caching Setup Variables
 cachingServerRoot="/Library/Server" # Default is /Library/Server
@@ -41,6 +42,10 @@ casperDPReadWritePassword="password" # Change!
 casperDPReadShortName="casperinstall"
 casperDPReadRealName="Casper Install"
 casperDPReadPassword="password" # Change!
+
+# Virtual Box
+zelloOVA="/path/to/ZelloServer.ova"
+windowsOVA="path/to/Windows.ova"
 
 # Log and log archive location
 log_location="/var/log/serverDeploy_install.log"
@@ -79,7 +84,7 @@ serverSetup() {
     # Setup Server.app
     # agree to terms, etc.
 
-    ./serverSetup.exp "$serverSetupUsername" "$serverSetupPassword"
+    ./serverSetup.exp "$localAdminUser" "$localAdminPass"
     sleep 5
 }
 
@@ -150,10 +155,8 @@ casperDP() {
 }
 
 windowsVMSetup() {
-
-    #man VBoxManage
-    #windows VM image will need to be built and deployed
-    # vboxmanage createvm --name "Windows 7" --register
+    # windows VM image will need to be built and deployed
+    # vboxmanage import ${windowsOVA}
     # vboxmanage startvm "Windows 7"
     # this is on hold
 true;
@@ -163,15 +166,28 @@ zelloVMSetup() {
 
     #man VBoxManage
     #zello is an OOB ova.
-    vboxmanage import "/var/rh/ZelloServer.ova"
+    vboxmanage import ${zelloOVA}
     # vboxmanage startvm "Zello Server 64" # we want to save this for a launchagent to run in the background
+
+    # Create LauchAgent for $localAdminUser
+    echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+    <!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">
+    <plist version=\"1.0\">
+    <dict>
+        <key>Label</key>
+            <string>com.rh.zelloserver</string>
+        <key>ProgramArguments</key>
+        <array>
+            <string>/usr/local/bin/vboxmanage</string>
+            <string>startvm</string>
+            <string>Zello Server 64</string>
+        </array>
+    </dict>
+    </plist>" > ${localAdminDir}/${localAdminUser}/Library/LaunchDaemons/com.rh.zelloserver.plist
 true;
 }
 
 prestoSetup() {
-
-    #probably some defaults write commands.
-
     #check if presto server is installed
     #set default settings for environment
     #apply license
