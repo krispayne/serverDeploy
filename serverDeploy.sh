@@ -50,8 +50,12 @@ archive_log_location="/var/log/serverDeploy_install-$(date +%Y-%m-%d-%H-%M-%S).l
 
 # Settings we are going to need to edit
 # Windows VM - 0%
-# Zello VM - 0%
+# Zello VM - 90%
+    # need to write launchagent
 # Presto 2 - 0%
+    # todo
+    # checks defaults
+    # apply license (if needed)
 
 mainScript() {
     # Run the script
@@ -159,8 +163,8 @@ zelloVMSetup() {
 
     #man VBoxManage
     #zello is an OOB ova.
-    # vboxmanage import "/var/rh/zello.ova"
-    # vboxmanage startvm "Zello Server 64"
+    vboxmanage import "/var/rh/ZelloServer.ova"
+    # vboxmanage startvm "Zello Server 64" # we want to save this for a launchagent to run in the background
 true;
 }
 
