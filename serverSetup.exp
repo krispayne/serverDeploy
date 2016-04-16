@@ -3,13 +3,13 @@
 
 set timeout 300
 
-set username [lindex $argv 0]
-set password [lindex $argv 1]
+set theusername [lindex $argv 0]
+set thepassword [lindex $argv 1]
 
 spawn /Applications/Server.app/Contents/ServerRoot/usr/sbin/server setup
 expect "Press Return to view the software license agreement." { send \r }
 expect "Do you agree to the terms of the software license agreement? (y/N)" { send "y\r" }
-expect "User name:" { send $username\r }
-expect "Password:" { send $password]\r }
+expect "User name:" { send $theusername\r }
+expect "Password:" { send $thepassword\r }
 interact
 exit 0
