@@ -113,7 +113,7 @@ serverCachingSetup() {
     /Applications/Server.app/Contents/ServerRoot/usr/sbin/serveradmin settings caching:DataPath = "$cachingDataPath" | ScriptLogging
     /Applications/Server.app/Contents/ServerRoot/usr/sbin/serveradmin settings caching:LocalSubnetsOnly = "$cachingLocalSubnetsOnly" | ScriptLogging
     /Applications/Server.app/Contents/ServerRoot/usr/sbin/serveradmin settings caching:AllowPersonalCaching = "$cachingAllowPersonalCaching" | ScriptLogging
-    /Applications/Ser | ScriptLoggingver.app/Contents/ServerRoot/usr/sbin/serveradmin settings caching:ReservedVolumeSpace = "$cachingReservedVolumeSpace"
+    /Applications/Server.app/Contents/ServerRoot/usr/sbin/serveradmin settings caching:ReservedVolumeSpace = "$cachingReservedVolumeSpace" | ScriptLogging
     /Applications/Server.app/Contents/ServerRoot/usr/sbin/serveradmin settings caching:CacheLimit = "$cachingCacheLimit" | ScriptLogging
 
     # restart the service
