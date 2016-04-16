@@ -79,6 +79,14 @@ mainScript() {
     #windowsVMSetup
     #zelloVMSetup
     #prestoSetup
+
+    ScriptLogging "  --------------------  "
+    ScriptLogging " Server Deploy Complete "
+    ScriptLogging "  --------------------  "
+    ScriptLogging " "
+    ScriptLogging "$(date +%Y-%m-%d\ %H:%M:%S)"
+    ScriptLogging " "
+    ScriptLogging " end "
 }
 
 # ---------------------------------------------------------------------------- #
