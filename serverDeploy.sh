@@ -52,11 +52,7 @@ log_location="/var/log/serverDeploy_install.log"
 archive_log_location="/var/log/serverDeploy_install-$(date +%Y-%m-%d-%H-%M-%S).log"
 
 # Progress tracker:
-
-# Settings we are going to need to edit
 # Windows VM - 0%
-# Zello VM - 90%
-    # need to write launchagent
 # Presto 2 - 0%
     # todo
     # checks defaults
@@ -64,10 +60,19 @@ archive_log_location="/var/log/serverDeploy_install-$(date +%Y-%m-%d-%H-%M-%S).l
 
 mainScript() {
     # Run the script
+
+    if [[ -f "$log_location" ]]; then
+        /bin/mv "$log_location" "$archive_log_location"
+    fi
+
+    ScriptLogging "  --------------------  "
+    ScriptLogging " Starting Server Deploy "
+    ScriptLogging "  --------------------  "
+    ScriptLogging " "
+    ScriptLogging "$(date +%Y-%m-%d\ %H:%M:%S)"
+    ScriptLogging " "
+
     # Comment out functions you do not want to run.
-
-    #All are off by default!
-
     #serverSetup
     #serverCachingSetup
     #casperDP
@@ -83,7 +88,9 @@ mainScript() {
 serverSetup() {
     # Setup Server.app
     # agree to terms, etc.
-
+    ScriptLogging "  --------------------  "
+    ScriptLogging "    Server.app Setup    "
+    ScriptLogging "  --------------------  "
     ./serverSetup.exp "$localAdminUser" "$localAdminPass"
     sleep 5
 }
@@ -95,60 +102,64 @@ serverCachingSetup() {
     # http://krypted.com/mac-security/the-new-caching-service-in-os-x-server/
     # http://krypted.com/mac-security/use-the-caching-server-in-os-x-server-5/
 
+    ScriptLogging "  --------------------  "
+    ScriptLogging "      Caching Setup     "
+    ScriptLogging "  --------------------  "
+
     # start the service
-    echo " Setting up Caching Server "
-    /Applications/Server.app/Contents/ServerRoot/usr/sbin/serveradmin start caching
-    /Applications/Server.app/Contents/ServerRoot/usr/sbin/serveradmin settings caching:ServerRoot = "$cachingServerRoot"
-    /Applications/Server.app/Contents/ServerRoot/usr/sbin/serveradmin settings caching:DataPath = "$cachingDataPath"
-    /Applications/Server.app/Contents/ServerRoot/usr/sbin/serveradmin settings caching:LocalSubnetsOnly = "$cachingLocalSubnetsOnly"
-    /Applications/Server.app/Contents/ServerRoot/usr/sbin/serveradmin settings caching:AllowPersonalCaching = "$cachingAllowPersonalCaching"
-    /Applications/Server.app/Contents/ServerRoot/usr/sbin/serveradmin settings caching:ReservedVolumeSpace = "$cachingReservedVolumeSpace"
-    /Applications/Server.app/Contents/ServerRoot/usr/sbin/serveradmin settings caching:CacheLimit = "$cachingCacheLimit"
+    ScriptLogging " Setting up Caching Server "
+    /Applications/Server.app/Contents/ServerRoot/usr/sbin/serveradmin start caching | ScriptLogging
+    /Applications/Server.app/Contents/ServerRoot/usr/sbin/serveradmin settings caching:ServerRoot = "$cachingServerRoot" | ScriptLogging
+    /Applications/Server.app/Contents/ServerRoot/usr/sbin/serveradmin settings caching:DataPath = "$cachingDataPath" | ScriptLogging
+    /Applications/Server.app/Contents/ServerRoot/usr/sbin/serveradmin settings caching:LocalSubnetsOnly = "$cachingLocalSubnetsOnly" | ScriptLogging
+    /Applications/Server.app/Contents/ServerRoot/usr/sbin/serveradmin settings caching:AllowPersonalCaching = "$cachingAllowPersonalCaching" | ScriptLogging
+    /Applications/Ser | ScriptLoggingver.app/Contents/ServerRoot/usr/sbin/serveradmin settings caching:ReservedVolumeSpace = "$cachingReservedVolumeSpace"
+    /Applications/Server.app/Contents/ServerRoot/usr/sbin/serveradmin settings caching:CacheLimit = "$cachingCacheLimit" | ScriptLogging
 
     # restart the service
-    echo " Restarting Caching Server "
+    ScriptLogging " Restarting Caching Server "
     /Applications/Server.app/Contents/ServerRoot/usr/sbin/serveradmin stop caching
     sleep 10
     /Applications/Server.app/Contents/ServerRoot/usr/sbin/serveradmin start caching
-    echo " Caching enabled and setup! "
+    ScriptLogging " Caching enabled and setup! "
 }
 
 casperDP() {
 
     # Create the directory for the DP Share, if it doesn't already exist
     if [ -d "$casperDPDirectory" ]; then
-        echo " Directory Exists "
+        ScriptLogging " Directory Exists "
     else
-        echo "Create $casperDPDirectory"
+        ScriptLogging "  Create $casperDPDirectory"
         /bin/mkdir "$casperDPDirectory"
     fi
 
     # Create users for the share: casperadmin (read/write) casperinstall (read)
-    echo "Create $casperDPReadWriteShortName..."
+    ScriptLogging "  Create $casperDPReadWriteShortName..."
     dscl . -create "/Users/$casperDPReadWriteShortName"
     dscl . -create "/Users/$casperDPReadWriteShortName" UserShell /bin/bash
     dscl . -create "/Users/$casperDPReadWriteShortName" RealName "$casperDPReadWriteRealName"
     dscl . -create "/Users/$casperDPReadWriteShortName" UniqueID $RANDOM
     dscl . -create "/Users/$casperDPReadWriteShortName" PrimaryGroupID 1000
 
-    echo "Create $casperDPReadShortName..."
+    ScriptLogging "  Create $casperDPReadShortName..."
     dscl . -create "/Users/$casperDPReadShortName"
     dscl . -create "/Users/$casperDPReadShortName" UserShell /bin/bash
     dscl . -create "/Users/$casperDPReadShortName" RealName "$casperDPReadRealName"
     dscl . -create "/Users/$casperDPReadShortName" UniqueID $RANDOM
     dscl . -create "/Users/$casperDPReadShortName" PrimaryGroupID 1000
 
-    echo "Set $casperDPReadWriteShortName password..."
+    ScriptLogging "  Set $casperDPReadWriteShortName password..."
     dscl . -passwd "/Users/$casperDPReadWriteShortName" "$casperDPReadWritePassword"
 
-    echo "Set $casperDPReadShortName password..."
+    ScriptLogging "  Set $casperDPReadShortName password..."
     dscl . -passwd "/Users/$casperDPReadShortName" "$casperDPReadPassword"
 
     # enable the filesharing service
-    /usr/sbin/sharing -a "$casperDPDirectory" -AS $casperDPDirectoryFriendlyName -s 110 -g 000
+    /usr/sbin/sharing -a "$casperDPDirectory" -AS $casperDPDirectoryFriendlyName -s 110 -g 000 | ScriptLogging
 
     # enable casperadmin and casperinstall access
-    echo "Set ACL's for our Casper Users..."
+    ScriptLogging "  Set ACL's for our Casper Users..."
     /bin/chmod +a "$casperDPReadWriteShortName allow list,add_file,search,add_subdirectory,delete_child,readattr,writeattr,readextattr,writeextattr,readsecurity" "$casperDPDirectory"
     /bin/chmod +a "$casperDPReadShortName allow list,search,readattr,readextattr,readsecurity" "$casperDPDirectory"
 
@@ -164,10 +175,12 @@ true;
 
 zelloVMSetup() {
 
-    #man VBoxManage
-    #zello is an OOB ova.
+    ScriptLogging "  --------------------  "
+    ScriptLogging "     Zello OVA Setup    "
+    ScriptLogging "  --------------------  "
+
+    # Import Zello OVA
     vboxmanage import ${zelloOVA}
-    # vboxmanage startvm "Zello Server 64" # we want to save this for a launchagent to run in the background
 
     # Create LauchAgent for $localAdminUser
     echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
@@ -195,17 +208,6 @@ true;
 }
 
 ScriptLogging(){
-
-    if [[ -f "$log_location" ]]; then
-        /bin/mv "$log_location" "$archive_log_location"
-    fi
-
-    ScriptLogging "  -------------------  "
-    ScriptLogging " Starting Server Deploy "
-    ScriptLogging "  -------------------  "
-    ScriptLogging " "
-    ScriptLogging "$(date +%Y-%m-%d\ %H:%M:%S)"
-    ScriptLogging " "
 
     if [ -n "$1" ]; then
         IN="$1"
