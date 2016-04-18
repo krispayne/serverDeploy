@@ -23,6 +23,7 @@
 localAdminUser="admin" # Change!
 localAdminPass="password" # Change!
 localAdminDir="/var" # Change!
+serverSetupLocation="/var/scripts" # Location of the serverSetup.exp for use during deployment. Change!
 
 # Server.app Caching Setup Variables
 cachingServerRoot="/Library/Server" # Default is /Library/Server
@@ -99,7 +100,7 @@ serverSetup() {
     ScriptLogging "  --------------------  "
     ScriptLogging "    Server.app Setup    "
     ScriptLogging "  --------------------  "
-    ./serverSetup.exp "$localAdminUser" "$localAdminPass"
+    expect ${serverSetupLocation}/serverSetup.exp "$localAdminUser" "$localAdminPass"
     sleep 5
 }
 
