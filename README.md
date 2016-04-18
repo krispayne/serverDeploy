@@ -3,8 +3,8 @@ script to deploy mac mini servers with some defaults
 
 usage:
 
-`$ chmod +x serverSetup.exp && chmod +x serverDeploy.sh`
+`$ chmod +x serverDeploy.sh`
 
 `$ sudo ./serverDeploy.sh`
 
-If you are running this in a Casper policy, make sure you deploy the serverSetup.exp to a directory on the machine before this scrupt is run.
+This isn't running as an imaging (tried at reboot) script in Casper. Running after first login from a `sudo jamf policy -trigger` works fine.
