@@ -20,10 +20,10 @@
 
 # Server.app Setup Variables
 # These are the local admin to the Mac
-localAdminUser="admin" # Change!
-localAdminPass="password" # Change!
+export localAdminUser="change" # Change!
+export localAdminPass="change" # Change!
 localAdminDir="/var" # Change!
-serverSetupLocation="/var/scripts" # Location of the serverSetup.exp for use during deployment. Change!
+serverSetupLocation="/var/change" # Change!
 
 # Server.app Caching Setup Variables
 cachingServerRoot="/Library/Server" # Default is /Library/Server
@@ -39,14 +39,14 @@ casperDPDirectoryFriendlyName="CasperShare" # I just make it the same as the dir
 # User setup
 casperDPReadWriteShortName="casperadmin"
 casperDPReadWriteRealName="Casper Admin"
-casperDPReadWritePassword="password" # Change!
+casperDPReadWritePassword="change" # Change!
 casperDPReadShortName="casperinstall"
 casperDPReadRealName="Casper Install"
-casperDPReadPassword="password" # Change!
+casperDPReadPassword="change" # Change!
 
 # Virtual Box
-zelloOVA="/path/to/ZelloServer.ova"
-windowsOVA="path/to/Windows.ova"
+zelloOVA="/var/location/ZelloServer.ova"
+windowsOVA="/var/location/Windows.ova"
 
 # Log and log archive location
 log_location="/var/log/serverDeploy_install.log"
@@ -66,28 +66,23 @@ mainScript() {
         /bin/mv "$log_location" "$archive_log_location"
     fi
 
-    ScriptLogging "  --------------------  "
-    ScriptLogging " Starting Server Deploy "
-    ScriptLogging "  --------------------  "
-    ScriptLogging " "
-    ScriptLogging "$(date +%Y-%m-%d\ %H:%M:%S)"
+    ScriptLogging "----------------------"
+    ScriptLogging "Starting Server Deploy"
     ScriptLogging " "
 
     # Comment out functions you do not want to run.
-    #serverSetup
-    #serverCachingSetup
-    #casperDP
+    serverSetup
+    serverCachingSetup
+    casperDP
+    zelloVMSetup
     #windowsVMSetup
-    #zelloVMSetup
-    #prestoSetup
 
-    ScriptLogging "  --------------------  "
-    ScriptLogging " Server Deploy Complete "
-    ScriptLogging "  --------------------  "
+    ScriptLogging "----------------------"
+    ScriptLogging "Server Deploy Complete"
     ScriptLogging " "
     ScriptLogging "$(date +%Y-%m-%d\ %H:%M:%S)"
-    ScriptLogging " "
-    ScriptLogging " end "
+    ScriptLogging "----------------------"
+
 }
 
 # ---------------------------------------------------------------------------- #
@@ -97,16 +92,15 @@ mainScript() {
 serverSetup() {
     # Setup Server.app
     # agree to terms, etc.
-    ScriptLogging "  --------------------  "
-    ScriptLogging "    Server.app Setup    "
-    ScriptLogging "  --------------------  "
+    ScriptLogging "----------------------"
+    ScriptLogging "Server.app Setup"
+    ScriptLogging " "
 
     SERVERVAR=$(expect -c '
 
         set timeout 300
-
-        set theusername $localAdminUser
-        set thepassword $localAdminPass
+        set theusername $env(localAdminUser)
+        set thepassword $env(localAdminPass)
 
         spawn /Applications/Server.app/Contents/ServerRoot/usr/sbin/server setup
 
@@ -123,11 +117,10 @@ serverSetup() {
             "Password:" { send $thepassword\r }
         }
         interact
-        expect eof
     ')
 
-    echo ${SERVERVAR}
-    sleep 5
+    echo ${SERVERVAR} | ScriptLogging
+    sleep 10
 }
 
 # Start setting up Server.app (Caching)
@@ -137,12 +130,12 @@ serverCachingSetup() {
     # http://krypted.com/mac-security/the-new-caching-service-in-os-x-server/
     # http://krypted.com/mac-security/use-the-caching-server-in-os-x-server-5/
 
-    ScriptLogging "  --------------------  "
-    ScriptLogging "      Caching Setup     "
-    ScriptLogging "  --------------------  "
+    ScriptLogging "----------------------"
+    ScriptLogging "Caching Setup"
+    ScriptLogging " "
 
     # start the service
-    ScriptLogging " Setting up Caching Server "
+    ScriptLogging " - Setting up Caching Server"
     /Applications/Server.app/Contents/ServerRoot/usr/sbin/serveradmin start caching | ScriptLogging
     /Applications/Server.app/Contents/ServerRoot/usr/sbin/serveradmin settings caching:ServerRoot = "$cachingServerRoot" | ScriptLogging
     /Applications/Server.app/Contents/ServerRoot/usr/sbin/serveradmin settings caching:DataPath = "$cachingDataPath" | ScriptLogging
@@ -152,51 +145,61 @@ serverCachingSetup() {
     /Applications/Server.app/Contents/ServerRoot/usr/sbin/serveradmin settings caching:CacheLimit = "$cachingCacheLimit" | ScriptLogging
 
     # restart the service
-    ScriptLogging " Restarting Caching Server "
-    /Applications/Server.app/Contents/ServerRoot/usr/sbin/serveradmin stop caching
+    ScriptLogging " - Restarting Caching Server"
+    /Applications/Server.app/Contents/ServerRoot/usr/sbin/serveradmin stop caching | ScriptLogging
     sleep 10
-    /Applications/Server.app/Contents/ServerRoot/usr/sbin/serveradmin start caching
-    ScriptLogging " Caching enabled and setup! "
+    /Applications/Server.app/Contents/ServerRoot/usr/sbin/serveradmin start caching | ScriptLogging
+    ScriptLogging " - Caching enabled and setup!"
 }
 
 casperDP() {
 
+    ScriptLogging "----------------------"
+    ScriptLogging "CasperShare Setup"
+    ScriptLogging " "
+
     # Create the directory for the DP Share, if it doesn't already exist
     if [ -d "$casperDPDirectory" ]; then
-        ScriptLogging " Directory Exists "
+        ScriptLogging " - Directory Exists "
     else
-        ScriptLogging "  Create $casperDPDirectory"
+        ScriptLogging " - Create $casperDPDirectory"
         /bin/mkdir "$casperDPDirectory"
     fi
 
     # Create users for the share: casperadmin (read/write) casperinstall (read)
-    ScriptLogging "  Create $casperDPReadWriteShortName..."
-    dscl . -create "/Users/$casperDPReadWriteShortName"
-    dscl . -create "/Users/$casperDPReadWriteShortName" UserShell /bin/bash
-    dscl . -create "/Users/$casperDPReadWriteShortName" RealName "$casperDPReadWriteRealName"
-    dscl . -create "/Users/$casperDPReadWriteShortName" UniqueID $RANDOM
-    dscl . -create "/Users/$casperDPReadWriteShortName" PrimaryGroupID 1000
+    ScriptLogging " - Create $casperDPReadWriteShortName..."
+    dscl . -create "/Users/$casperDPReadWriteShortName" | ScriptLogging
+    dscl . -create "/Users/$casperDPReadWriteShortName" UserShell /bin/bash | ScriptLogging
+    dscl . -create "/Users/$casperDPReadWriteShortName" RealName "$casperDPReadWriteRealName" | ScriptLogging
+    dscl . -create "/Users/$casperDPReadWriteShortName" UniqueID $RANDOM | ScriptLogging
+    dscl . -create "/Users/$casperDPReadWriteShortName" PrimaryGroupID 1000 | ScriptLogging
 
-    ScriptLogging "  Create $casperDPReadShortName..."
-    dscl . -create "/Users/$casperDPReadShortName"
-    dscl . -create "/Users/$casperDPReadShortName" UserShell /bin/bash
-    dscl . -create "/Users/$casperDPReadShortName" RealName "$casperDPReadRealName"
-    dscl . -create "/Users/$casperDPReadShortName" UniqueID $RANDOM
-    dscl . -create "/Users/$casperDPReadShortName" PrimaryGroupID 1000
+    ScriptLogging " - Create $casperDPReadShortName..."
+    dscl . -create "/Users/$casperDPReadShortName" | ScriptLogging
+    dscl . -create "/Users/$casperDPReadShortName" UserShell /bin/bash | ScriptLogging
+    dscl . -create "/Users/$casperDPReadShortName" RealName "$casperDPReadRealName" | ScriptLogging
+    dscl . -create "/Users/$casperDPReadShortName" UniqueID $RANDOM | ScriptLogging
+    dscl . -create "/Users/$casperDPReadShortName" PrimaryGroupID 1000 | ScriptLogging
 
-    ScriptLogging "  Set $casperDPReadWriteShortName password..."
-    dscl . -passwd "/Users/$casperDPReadWriteShortName" "$casperDPReadWritePassword"
+    ScriptLogging " - Set $casperDPReadWriteShortName password..."
+    dscl . -passwd "/Users/$casperDPReadWriteShortName" "$casperDPReadWritePassword" | ScriptLogging
 
-    ScriptLogging "  Set $casperDPReadShortName password..."
-    dscl . -passwd "/Users/$casperDPReadShortName" "$casperDPReadPassword"
+    ScriptLogging " - Set $casperDPReadShortName password..."
+    dscl . -passwd "/Users/$casperDPReadShortName" "$casperDPReadPassword" | ScriptLogging
 
     # enable the filesharing service
     /usr/sbin/sharing -a "$casperDPDirectory" -AS $casperDPDirectoryFriendlyName -s 110 -g 000 | ScriptLogging
 
     # enable casperadmin and casperinstall access
-    ScriptLogging "  Set ACL's for our Casper Users..."
-    /bin/chmod +a "$casperDPReadWriteShortName allow list,add_file,search,add_subdirectory,delete_child,readattr,writeattr,readextattr,writeextattr,readsecurity" "$casperDPDirectory"
-    /bin/chmod +a "$casperDPReadShortName allow list,search,readattr,readextattr,readsecurity" "$casperDPDirectory"
+    ScriptLogging " - Set ACL's for our Casper Users..."
+    /bin/chmod +a "$casperDPReadWriteShortName allow list,add_file,search,add_subdirectory,delete_child,readattr,writeattr,readextattr,writeextattr,readsecurity" "$casperDPDirectory" | ScriptLogging
+    /bin/chmod +a "$casperDPReadShortName allow list,search,readattr,readextattr,readsecurity" "$casperDPDirectory" | ScriptLogging
+
+    # Start filesharing in server
+    ScriptLogging " - Turning on FileSharing"
+    /Applications/Server.app/Contents/ServerRoot/usr/sbin/serveradmin start sharing | ScriptLogging
+    /Applications/Server.app/Contents/ServerRoot/usr/sbin/serveradmin start smb | ScriptLogging
+    ScriptLogging " - FileSharing enabled and setup!"
 
 }
 
@@ -205,18 +208,22 @@ windowsVMSetup() {
     # vboxmanage import ${windowsOVA}
     # vboxmanage startvm "Windows 7"
     # this is on hold
-true;
+    echo " ---- Windows! ----" | ScriptLogging
 }
 
 zelloVMSetup() {
 
-    ScriptLogging "  --------------------  "
-    ScriptLogging "     Zello OVA Setup    "
-    ScriptLogging "  --------------------  "
+    ScriptLogging "----------------------"
+    ScriptLogging "Zello OVA Setup"
+    ScriptLogging " "
+
+    touch ${localAdminDir}/${localAdminUser}/Library/LaunchDaemons/com.rh.zelloserver.plist | ScriptLogging
 
     # Import Zello OVA
-    vboxmanage import ${zelloOVA}
+    vboxmanage import ${zelloOVA} | ScriptLogging
 
+
+    ScriptLogging " - Creating LaunchAgent"
     # Create LauchAgent for $localAdminUser
     echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
     <!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">
@@ -232,14 +239,6 @@ zelloVMSetup() {
         </array>
     </dict>
     </plist>" > ${localAdminDir}/${localAdminUser}/Library/LaunchDaemons/com.rh.zelloserver.plist
-true;
-}
-
-prestoSetup() {
-    #check if presto server is installed
-    #set default settings for environment
-    #apply license
-true;
 }
 
 ScriptLogging(){
