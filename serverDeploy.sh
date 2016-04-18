@@ -23,7 +23,6 @@
 export localAdminUser="change" # Change!
 export localAdminPass="change" # Change!
 localAdminDir="/var" # Change!
-serverSetupLocation="/var/change" # Change!
 
 # Server.app Caching Setup Variables
 cachingServerRoot="/Library/Server" # Default is /Library/Server
@@ -46,7 +45,7 @@ casperDPReadPassword="change" # Change!
 
 # Virtual Box
 zelloOVA="/var/location/ZelloServer.ova"
-windowsOVA="/var/location/Windows.ova"
+#windowsOVA="/var/location/Windows.ova"
 
 # Log and log archive location
 log_location="/var/log/serverDeploy_install.log"
@@ -119,7 +118,7 @@ serverSetup() {
         interact
     ')
 
-    echo ${SERVERVAR} | ScriptLogging
+    echo "${SERVERVAR}" | ScriptLogging
     sleep 10
 }
 
