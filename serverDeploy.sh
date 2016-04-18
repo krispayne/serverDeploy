@@ -100,7 +100,33 @@ serverSetup() {
     ScriptLogging "  --------------------  "
     ScriptLogging "    Server.app Setup    "
     ScriptLogging "  --------------------  "
-    sh ${serverSetupLocation}/serverSetup.exp "$localAdminUser" "$localAdminPass"
+
+    SERVERVAR=$(expect -c '
+
+        set timeout 300
+
+        set theusername $localAdminUser
+        set thepassword $localAdminPass
+
+        spawn /Applications/Server.app/Contents/ServerRoot/usr/sbin/server setup
+
+        expect {
+            "Press Return to view the software license agreement." { send \r }
+        }
+        expect {
+            "Do you agree to the terms of the software license agreement? (y/N)" { send "y\r" }
+        }
+        expect {
+            "User name:" { send $theusername\r }
+        }
+        expect {
+            "Password:" { send $thepassword\r }
+        }
+        interact
+        expect eof
+    ')
+
+    echo ${SERVERVAR}
     sleep 5
 }
 
