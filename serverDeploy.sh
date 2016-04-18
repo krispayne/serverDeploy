@@ -100,7 +100,7 @@ serverSetup() {
     ScriptLogging "  --------------------  "
     ScriptLogging "    Server.app Setup    "
     ScriptLogging "  --------------------  "
-    expect ${serverSetupLocation}/serverSetup.exp "$localAdminUser" "$localAdminPass"
+    sh ${serverSetupLocation}/serverSetup.exp "$localAdminUser" "$localAdminPass"
     sleep 5
 }
 
