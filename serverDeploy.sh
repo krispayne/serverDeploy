@@ -216,7 +216,7 @@ zelloVMSetup() {
     ScriptLogging "Zello OVA Setup"
     ScriptLogging " "
 
-    touch ${localAdminDir}/${localAdminUser}/Library/LaunchDaemons/com.rh.zelloserver.plist | ScriptLogging
+    touch ${localAdminDir}/${localAdminUser}/Library/LaunchAgents/com.rh.zelloserver.plist | ScriptLogging
 
     # Import Zello OVA
     vboxmanage import ${zelloOVA} | ScriptLogging
@@ -237,7 +237,7 @@ zelloVMSetup() {
             <string>Zello Server 64</string>
         </array>
     </dict>
-    </plist>" > ${localAdminDir}/${localAdminUser}/Library/LaunchDaemons/com.rh.zelloserver.plist
+    </plist>" > ${localAdminDir}/${localAdminUser}/Library/LaunchAgents/com.rh.zelloserver.plist
 }
 
 ScriptLogging(){
