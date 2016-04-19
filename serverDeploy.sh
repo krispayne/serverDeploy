@@ -73,6 +73,7 @@ mainScript() {
     serverSetup
     serverCachingSetup
     casperDP
+    virtualBoxSetup
     zelloVMSetup
     #windowsVMSetup
 
@@ -202,10 +203,14 @@ casperDP() {
 
 }
 
+virtualBoxSetup(){
+    ln -s /Applications/VirtualBox.app/Contents/MacOS/VBoxManage /usr/local/bin
+}
+
 windowsVMSetup() {
     # windows VM image will need to be built and deployed
-    # vboxmanage import ${windowsOVA}
-    # vboxmanage startvm "Windows 7"
+    # VBoxManage import ${windowsOVA}
+    # VBoxManage startvm "Windows 7"
     # this is on hold
     echo " ---- Windows! ----" | ScriptLogging
 }
@@ -219,7 +224,7 @@ zelloVMSetup() {
     touch ${localAdminDir}/${localAdminUser}/Library/LaunchAgents/com.rh.zelloserver.plist | ScriptLogging
 
     # Import Zello OVA
-    vboxmanage import ${zelloOVA} | ScriptLogging
+    VBoxManage import ${zelloOVA} | ScriptLogging
 
 
     ScriptLogging " - Creating LaunchAgent"
