@@ -98,7 +98,7 @@ serverSetup() {
 
     SERVERVAR=$(expect -c '
 
-        set timeout 300
+        set timeout 400
         set theusername $env(localAdminUser)
         set thepassword $env(localAdminPass)
 
